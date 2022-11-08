@@ -5,9 +5,9 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 [![HitCount](http://hits.dwyl.com/Pugmatt/BedrockConnect.svg)](http://hits.dwyl.com/Pugmatt/BedrockConnect)
 
-On Minecraft Bedrock Edition, players on Xbox One, Nintendo Switch, and PS4 are limited to playing on 'Featured Servers' approved by Mojang/Microsoft. These players are not able to join servers via an IP/address. This is an issue for me and others, as the server community on Java edition was one of the major parts that made Minecraft what it was, and what also made what the servers that are now considered 'Mojang Server Partners' what they are today. I wanted to fix this, so I made a solution that anyone can setup easily.
+On Minecraft Bedrock Edition, players on Xbox One, Nintendo Switch, and PS4/PS5 are limited to playing on 'Featured Servers' approved by Mojang/Microsoft. These players are not able to join servers via an IP/address. This is an issue for me and others, as the server community on Java edition was one of the major parts that made Minecraft what it was, and what also made what the servers that are now considered 'Mojang Server Partners' what they are today. I wanted to fix this, so I made a solution that anyone can setup easily.
 
-BedrockConnect is an easy to use solution for Minecraft Bedrock Edition players on Xbox One, Nintendo Switch, PS4 to join any server IP, while also having access to a serverlist that allows you to manage a list of servers. It doesn't require any downloads, just a few changes to settings.
+BedrockConnect is an easy to use solution for Minecraft Bedrock Edition players on Xbox One, Nintendo Switch, PS4/PS5 to join any server IP, while also having access to a serverlist that allows you to manage a list of servers. It doesn't require any downloads, just a few changes to settings.
 
 Here's the final result in action: https://www.youtube.com/watch?v=Uz-XYXAxd8Q
 
@@ -60,6 +60,8 @@ There are multiple BedrockConnect serverlist servers available that can be used,
 | 213.171.211.142 | <img src="https://flagicons.lipis.dev/flags/4x3/gb.svg" height="20"> | [kmpoppe](https://github.com/kmpoppe) | No DNS service, only BedrockConnect server  |
 | 217.160.58.93 | <img src="https://flagicons.lipis.dev/flags/4x3/de.svg" height="20"> | [kmpoppe](https://github.com/kmpoppe) | No DNS service, only BedrockConnect server |
 | 188.165.49.178 | <img src="https://flagicons.lipis.dev/flags/4x3/fr.svg" height="20"> | [Darkmoi3108](https://github.com/darkmoi3108) | |
+| 134.255.231.119 | <img src="https://flagicons.lipis.dev/flags/4x3/de.svg" height="20"> | [ZAP-Hosting](https://github.com/zaphosting) | |
+| 91.218.66.13 | <img src="https://flagicons.lipis.dev/flags/4x3/de.svg" height="20"> | [LazyBirb](https://github.com/LazyBirb) | |
 
 If you are currently hosting a BedrockConnect instance and are interested in adding it to this list, create a pull request adding it to the table above.
 

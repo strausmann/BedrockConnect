@@ -6,6 +6,7 @@ import com.nukkitx.math.vector.Vector3f;
 import com.nukkitx.network.util.Preconditions;
 import com.nukkitx.protocol.bedrock.BedrockPacketCodec;
 import com.nukkitx.protocol.bedrock.data.AttributeData;
+import com.nukkitx.protocol.bedrock.data.PacketCompressionAlgorithm;
 import com.nukkitx.protocol.bedrock.packet.*;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSObject;
@@ -77,9 +78,10 @@ public class PacketHandler implements BedrockPacketHandler {
         player.movementOpen();
         return false;
     }
+
     @Override
-    public boolean handle(MovePlayerPacket packet) {
-        if(packet.getMode() == MovePlayerPacket.Mode.NORMAL || packet.getMode() == MovePlayerPacket.Mode.HEAD_ROTATION)
+    public boolean handle(AnimatePacket packet) {
+        if(packet.getAction() == AnimatePacket.Action.SWING_ARM)
             player.movementOpen();
         return false;
     }
@@ -92,7 +94,7 @@ public class PacketHandler implements BedrockPacketHandler {
         switch (packet.getFormId()) {
                 case UIForms.MAIN:
                     // Re-open window if closed
-                    if (packet.getFormData().contains("null")) {
+                    if (packet.getFormData() == null || packet.getFormData().contains("null")) {
                         if(player.getCurrentForm() != packet.getFormId())
                             return false;
                         player.openForm(UIForms.MAIN);
@@ -169,7 +171,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     }
                     break;
                 case UIForms.SERVER_GROUP:
-                    if(packet.getFormData().contains("null")) {
+                    if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                         if(player.getCurrentForm() != packet.getFormId())
                             return false;
                         player.openForm(UIForms.MAIN);
@@ -189,7 +191,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     }
                     break;
                 case UIForms.MANAGE_SERVER:
-                    if(packet.getFormData().contains("null")) {
+                    if(packet.getFormData() == null) {
                         if(player.getCurrentForm() != packet.getFormId())
                             return false;
                         player.openForm(UIForms.MAIN);
@@ -214,7 +216,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     break;
                 case UIForms.ADD_SERVER:
                     try {
-                        if(packet.getFormData().contains("null")) {
+                        if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                             if(player.getCurrentForm() != packet.getFormId())
                                 return false;
                             player.openForm(UIForms.MANAGE_SERVER);
@@ -242,7 +244,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     break;
                 case UIForms.DIRECT_CONNECT:
                     try {
-                        if(packet.getFormData().contains("null")) {
+                        if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                             if(player.getCurrentForm() != packet.getFormId())
                                 return false;
                             player.openForm(UIForms.MAIN);
@@ -274,7 +276,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     }
                     break;
                 case UIForms.EDIT_CHOOSE_SERVER:
-                    if(packet.getFormData().contains("null")) {
+                    if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                         if(player.getCurrentForm() != packet.getFormId())
                             return false;
                         player.openForm(UIForms.MANAGE_SERVER);
@@ -296,11 +298,12 @@ public class PacketHandler implements BedrockPacketHandler {
                             player.setEditingServer(chosen);
 
                             session.sendPacketImmediately(UIForms.createEditServer(ip, port, name));
+                            player.setCurrentForm(UIForms.EDIT_SERVER);
                         }
                     }
                     break;
                 case UIForms.EDIT_SERVER:
-                    if(packet.getFormData().contains("null")) {
+                    if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                         if(player.getCurrentForm() != packet.getFormId())
                             return false;
                         player.openForm(UIForms.EDIT_CHOOSE_SERVER);
@@ -331,7 +334,7 @@ public class PacketHandler implements BedrockPacketHandler {
                     break;
                 case UIForms.REMOVE_SERVER:
                     try {
-                        if(packet.getFormData().contains("null")) {
+                        if(packet.getFormData() == null || packet.getFormData().contains("null")) {
                             if(player.getCurrentForm() != packet.getFormId())
                                 return false;
                             player.openForm(UIForms.MANAGE_SERVER);
@@ -371,7 +374,7 @@ public class PacketHandler implements BedrockPacketHandler {
 
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
-            public void run() { session.sendPacket(updateAttributesPacket); }
+            public void run() { if(!session.isClosed()) { session.sendPacket(updateAttributesPacket); } }
         };
         timer.schedule(task, 500);
 
@@ -395,7 +398,21 @@ public class PacketHandler implements BedrockPacketHandler {
         return false;
     }
 
+    @Override
+    public boolean handle(RequestNetworkSettingsPacket packet) {
+        PacketCompressionAlgorithm algorithm = PacketCompressionAlgorithm.ZLIB;
+
+        NetworkSettingsPacket responsePacket = new NetworkSettingsPacket();
+        responsePacket.setCompressionAlgorithm(algorithm);
+        responsePacket.setCompressionThreshold(512);
+        session.sendPacketImmediately(responsePacket);
+
+        session.setCompression(algorithm);
+        return false;
+    }
+
     public PacketHandler(BedrockServerSession session, Server server, boolean packetListening) {
+        session.setPacketCodec(BedrockProtocol.DEFAULT_BEDROCK_CODEC);
         this.session = session;
         this.server = server;
 
